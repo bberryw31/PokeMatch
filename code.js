@@ -35,30 +35,41 @@ document.getElementById("startButton").addEventListener("click", function () {
     fetchPokemon(pokemonId).then((pokemon) => {
       const card = document.createElement("div");
       card.classList.add(
+        "card",
         "p-2",
         "flex",
         "justify-center",
         "items-center",
         "aspect-square",
-        "relative",
+        "relative"
       );
+      card.addEventListener("click", function () {
+        card.classList.toggle("flipped");
+        setTimeout(() => {
+          pokemonImg.classList.toggle("hidden");
+          pokeballImg.classList.toggle("hidden");
+        }, 180);
+      });
 
       const pokemonImg = document.createElement("img");
       pokemonImg.src = pokemon;
       pokemonImg.classList.add(
+        "pokemon-img",
         "object-contain",
         "w-full",
         "h-full",
         "p-1",
         "absolute",
         "top-0",
-        "left-0"
+        "left-0",
+        "hidden"
       );
       card.appendChild(pokemonImg);
 
       const pokeballImg = document.createElement("img");
       pokeballImg.src = "pokeball.png";
       pokeballImg.classList.add(
+        "pokeball-img",
         "object-contain",
         "w-full",
         "h-full",
@@ -73,7 +84,3 @@ document.getElementById("startButton").addEventListener("click", function () {
     });
   });
 });
-
-function createGameBoard(pokemons) {
-  console.log(pokemons);
-}
