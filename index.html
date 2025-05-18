@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="fantasy">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,67 +9,183 @@
       rel="stylesheet"
       type="text/css"
     />
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+      .card-flip {
+        perspective: 1000px;
+        transition: transform 0.6s;
+      }
+      .card-flip.flipped {
+        transform: rotateY(180deg);
+      }
+      .card-face {
+        backface-visibility: hidden;
+        transition: all 0.3s;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+      }
+      .card-front {
+        transform: rotateY(180deg);
+      }
+      .card-matched {
+        opacity: 0.7;
+        box-shadow: 0 0 15px rgba(120, 255, 120, 0.7) !important;
+        border-color: #4caf50 !important;
+      }
+    </style>
   </head>
-  <body>
-    <div
-      class="w-full h-screen items-center bg-[url('./bg.gif')] bg-cover bg-center"
-    >
-      <p
-        class="text-6xl font-extrabold font-sans text-pink-500 w-full text-center py-4"
-      >
-        PokeMatch
-      </p>
-      <div class="w-full max-w-sm mx-auto">
-        <div class="w-full flex justify-center">
+  <body
+    class="min-h-screen bg-cover bg-center transition-all duration-300"
+    style="background-image: url('./bg.gif')"
+  >
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative z-10 min-h-screen flex flex-col items-center">
+      <!-- Theme switch -->
+      <div class="w-full flex justify-end p-3">
+        <label class="swap swap-rotate">
           <input
-            type="range"
-            min="3"
-            max="6"
-            value="0"
-            class="range"
-            step="1"
-            id="difficulty"
+            type="checkbox"
+            id="themeToggle"
+            class="theme-controller"
+            value="dark"
           />
-        </div>
-        <div class="flex justify-between my-2 mx-2 text-xs">
-          <div class="badge badge-info">EASY</div>
-          <div class="badge badge-success">MED</div>
-          <div class="badge badge-warning">HARD</div>
-          <div class="badge badge-error">HELL</div>
-        </div>
-      </div>
-      <div class="w-full flex justify-center">
-        <button class="btn btn-md btn-secondary m-2" id="startButton">
-          START
-        </button>
-        <div class="flex flex-col" id="powerUpContainer" hidden>
-          <button
-            class="btn btn-md btn-outline m-2"
-            id="powerUpButton"
-            disabled
+          <svg
+            class="swap-on fill-current w-8 h-8 text-yellow-300"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
           >
-            POWER UP!
-          </button>
-          <progress
-            class="progress progress-default w-30 mx-auto"
-            id="powerUpGauge"
-            value="0"
-            max="100"
-          ></progress>
-        </div>
-        <button class="btn btn-md btn-warning m-2" id="resetButton" hidden>
-          RESET
-        </button>
+            <path
+              d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"
+            />
+          </svg>
+          <svg
+            class="swap-off fill-current w-8 h-8 text-slate-200"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"
+            />
+          </svg>
+        </label>
       </div>
-      <div id="gameBoard"></div>
-      <!-- <div class="grid grid-cols-3 w-[80%] m-4 p-2 rounded-sm border-1 mx-auto">
-        <div class="p-2 items-center">123</div>
-        <div class="p-2 items-center">123</div>
-        <div class="p-2 items-center">123</div>
-      </div> -->
+
+      <!-- Game header -->
+      <header class="text-center py-4">
+        <h1 class="text-base-100 text-5xl font-bold mb-1">PokeMatch</h1>
+        <p class="text-base-100 opacity-80">Match Pokemon cards to win!</p>
+      </header>
+
+      <!-- Difficulty selection -->
+      <div
+        class="bg-base-100/90 shadow-lg rounded-lg mx-auto max-w-fit p-4 mb-4"
+      >
+        <div class="flex flex-wrap justify-center gap-2 mb-3">
+          <button
+            class="difficulty-btn cursor-pointer inline-flex p-0.5 mb-2 me-2 text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 hover:from-green-400 hover:to-blue-600 focus:ring-4 focus:outline-none focus:ring-green-800"
+            data-difficulty="3"
+            >
+            <span
+              class="difficulty-span relative px-5 py-2.5 transition-all ease-in duration-75 bg-slate-900 rounded-md hover:bg-transparent"
+            >
+              EASY
+            </span>
+          </button>
+
+          <button
+            class="difficulty-btn cursor-pointer inline-flex p-0.5 mb-2 me-2 text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-500 hover:to-purple-600 focus:ring-4 focus:outline-none focus:ring-blue-800"
+            data-difficulty="4"
+            >
+            <span
+              class="difficulty-span relative px-5 py-2.5 transition-all ease-in duration-75 bg-slate-900 rounded-md hover:bg-transparent"
+            >
+              MEDIUM
+            </span>
+          </button>
+
+          <button
+            class="difficulty-btn cursor-pointer inline-flex p-0.5 mb-2 me-2 text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-purple-600 to-pink-500 hover:from-purple-600 hover:to-pink-500 focus:ring-4 focus:outline-none focus:ring-purple-800"
+            data-difficulty="5"
+            >
+            <span
+              class="difficulty-span relative px-5 py-2.5 transition-all ease-in duration-75 bg-slate-900 rounded-md hover:bg-transparent"
+            >
+              HARD
+            </span>
+          </button>
+
+          <button
+            class="difficulty-btn cursor-pointer inline-flex p-0.5 mb-2 me-2 text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 hover:from-pink-500 hover:to-orange-400 focus:ring-4 focus:outline-none focus:ring-pink-800"
+            data-difficulty="6"
+            >
+            <span
+              class="difficulty-span relative px-5 py-2.5 transition-all ease-in duration-75 bg-slate-900 rounded-md hover:bg-transparent"
+            >
+              EXTREME
+            </span>
+          </button>
+        </div>
+
+        <!-- Start button -->
+        <div class="flex justify-center">
+          <button
+            type="button"
+            class="text-white cursor-pointer bg-gradient-to-r from-pink-400 to-pink-700 hover:bg-gradient-to-l hover:scale-105 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 shadow-lg shadow-pink-500/50 transition-all duration-300 ease-in-out"
+            id="startButton"
+          >
+            START GAME
+          </button>
+        </div>
+      </div>
+
+      <!-- Game stats -->
+      <div
+        class="stats bg-base-100 shadow mx-auto mb-4 w-full max-w-md"
+        id="gameStats"
+        hidden
+      >
+        <div class="stat">
+          <div class="stat-title">Time Left</div>
+          <div class="stat-value" id="gameTime">5:00</div>
+          <div class="stat-desc mt-1">
+            <progress
+              class="progress progress-primary w-full"
+              id="timeProgress"
+              value="300"
+              max="300"
+            ></progress>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-title">Matches</div>
+          <div class="stat-value" id="matchCount">0</div>
+          <div class="stat-desc" id="matchDesc">Find all pairs!</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-title">Attempts</div>
+          <div class="stat-value" id="attemptCount">0</div>
+          <div class="stat-desc" id="attemptDesc">Try to minimize</div>
+        </div>
+      </div>
+
+      <!-- Game board - adjusted width -->
+      <div
+        id="gameBoard"
+        class="flex-1 bg-base-100/90 backdrop-blur-sm rounded-lg mx-4 my-2 p-4 grid gap-2 w-full max-w-4xl"
+      ></div>
+
+      <!-- Footer -->
+      <footer
+        class="footer footer-center p-5 bg-base-200 text-base-content w-full mt-auto"
+      >
+        <p>PokeMatch © 2025 - Jimmy Cho BCIT CST 2025</p>
+      </footer>
     </div>
   </body>
   <script src="./code.js"></script>
