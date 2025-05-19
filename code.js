@@ -37,7 +37,7 @@ const fetchPokemon = (pokemonId) => {
   return axios
     .get("https://pokeapi.co/api/v2/pokemon/" + pokemonId)
     .then((response) => {
-      return response.data.sprites.other["official-artwork"].front_default;
+      return pokemonId, response.data.sprites.other["official-artwork"].front_default;
     })
     .catch((error) => {
       console.error("Error fetching Pokemon:", error, pokemonId);
@@ -115,7 +115,9 @@ const checkForMatch = () => {
       updateStats();
 
       if (matches === cardCount / 2) {
-        gameOver(true);
+        setTimeout(() => {
+          gameOver(true);
+        }, 500);
       }
     } else {
       // not a match
@@ -136,6 +138,7 @@ const checkForMatch = () => {
           secondCard.dataset.enabled = "true";
           resetBoard();
           updateStats();
+          powerUp();
         }, 180);
       }, 800);
     }
@@ -173,31 +176,44 @@ const startGame = () => {
   const randomPokemonIds = new Set();
   while (randomPokemonIds.size < cardCount / 2) {
     randomPokemonIds.add(Math.floor(Math.random() * 898) + 1);
+  }
+  // array shuffle algorithm
+  const Shuffle = (array, times = 3) => {
+    for (let t = 0; t < times; t++) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+    return array;
   };
-  const randomPokemons = [
+  const randomPokemons = Shuffle([
     ...Array.from(randomPokemonIds),
     ...Array.from(randomPokemonIds),
-  ];
-  randomPokemons.sort(() => Math.random() - 0.5);
+  ]);
 
   gameBoard.innerHTML = "";
   gameBoard.className =
     "flex-1 bg-base-100/80 backdrop-blur-sm rounded-lg mx-4 mb-10 p-4 grid gap-2 w-full max-w-4xl";
   gameBoard.classList.add("grid-cols-" + selectedDifficulty);
 
-  randomPokemons.forEach((pokemonId) => {
-    fetchPokemon(pokemonId).then((pokemonImageUrl) => {
+  const pokemonPromises = randomPokemons.map((pokemonId) =>
+    fetchPokemon(pokemonId)
+  );
+  Promise.all(pokemonPromises).then((pokemonImages) => {
+    pokemonImages.forEach((pokemonImageUrl, index) => {
+      const pokemonId = randomPokemons[index];
       const card = document.createElement("div");
       card.dataset.pokemonId = pokemonId;
       card.dataset.enabled = "true";
       card.innerHTML = `
-        <div class="card-front hidden absolute inset-0">
-          <img src="${pokemonImageUrl}" alt="Pokemon ${pokemonId}" class="w-full h-full object-contain">
-        </div>
-        <div class="card-back absolute inset-0 hover:scale-95 transition-all ease-in-out duration-50">
-          <img src="./pokeball.png" alt="Pokeball" class="w-full h-full object-contain">
-        </div>
-      `;
+          <div class="card-front hidden absolute inset-0">
+            <img src="${pokemonImageUrl}" alt="Pokemon ${pokemonId}" class="w-full h-full object-contain">
+          </div>
+          <div class="card-back absolute inset-0 hover:scale-95 transition-all ease-in-out duration-50">
+            <img src="./pokeball.png" alt="Pokeball" class="w-full h-full object-contain">
+          </div>
+        `;
       card.classList.add(
         "card-flip",
         "bg-base-300",
@@ -210,6 +226,8 @@ const startGame = () => {
         "relative",
         "overflow-hidden"
       );
+
+      // Add click event listener
       card.addEventListener("click", () => {
         if (card.dataset.enabled === "false" || lockBoard || firstCard === card)
           return;
@@ -228,15 +246,16 @@ const startGame = () => {
           checkForMatch();
         }
       });
+
       gameBoard.appendChild(card);
     });
+    lockBoard = true;
+    setTimeout(() => {
+      powerUp();
+      lockBoard = false;
+    }, 500);
   });
-  lockBoard = true;
-  setTimeout(() => {
-    powerUp();
-    lockBoard = false;
-  }, 500);
-}
+};
 startButton.addEventListener("click", startGame);
 
 // reset
@@ -254,7 +273,8 @@ resetButton.addEventListener("click", resetGame);
 // power up
 const powerUpProgress = document.getElementById("powerUpProgress");
 const powerUp = () => {
-  if (powerUpProgress.value === powerUpProgress.max) {
+  powerUpProgress.value = parseInt(powerUpProgress.value) + 1;
+  if (powerUpProgress.value >= powerUpProgress.max) {
     console.log("Power up activated!");
     lockBoard = true;
     const cards = document.querySelectorAll(".card-flip");
@@ -279,8 +299,15 @@ const powerUp = () => {
       });
     }, 1000);
     powerUpProgress.value = "0";
-  } else {
-    powerUpProgress.value = parseInt(powerUpProgress.value) + 1;
+    lockBoard = false;
   }
-  lockBoard = false;
 };
+
+const gameOver = (won) => {
+  clearInterval(timer);
+  gameBoard.classList.remove("grid");
+  gameBoard.classList.add("hidden");
+  gameStatsWindow.hidden = true;
+  const message = won ? "You won!" : "Game over!";
+  alert(message);
+}
