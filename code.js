@@ -303,11 +303,21 @@ const powerUp = () => {
   }
 };
 
-const gameOver = (won) => {
+const gameOver = (win) => {
+  const modal = document.getElementById("gameOverModal");
+  const modalResult = document.getElementById("modalResult");
+  const modalTime = document.getElementById("modalTime");
+  const modalAttempts = document.getElementById("modalAttempts");
+
+  const timeTaken = 300 - timeLeft;
+  const minutes = Math.floor(timeTaken / 60);
+  const seconds = timeTaken % 60;
+
+  modalResult.textContent = win ? "You Won! 🎉" : "Time's Up! 😢";
+  modalResult.className = `stat-value ${win ? "text-success" : "text-error"}`;
+  modalTime.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  modalAttempts.textContent = attempts;
+
+  modal.showModal();
   clearInterval(timer);
-  gameBoard.classList.remove("grid");
-  gameBoard.classList.add("hidden");
-  gameStatsWindow.hidden = true;
-  const message = won ? "You won!" : "Game over!";
-  alert(message);
-}
+};

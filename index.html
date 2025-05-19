@@ -194,6 +194,33 @@
         class="hidden flex-1 bg-base-100/80 backdrop-blur-sm rounded-lg mx-4 my-2 p-4 gap-2 w-full max-w-4xl"
         ></div>
 
+      <!-- Game over modal -->
+      <dialog id="gameOverModal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box bg-base-200 text-base-content">
+          <div class="stat flex justify-center mb-4">
+            <div class="stat-value text-success" id="modalResult">You Won! 🎉</div>
+          </div>
+
+          <div class="stats shadow w-full bg-base-100">
+            <div class="stat">
+              <div class="stat-title">Time Taken</div>
+              <div class="stat-value text-primary" id="modalTime">2:30</div>
+            </div>
+
+            <div class="stat">
+              <div class="stat-title">Attempts</div>
+              <div class="stat-value text-secondary" id="modalAttempts">12</div>
+            </div>
+          </div>
+
+          <div class="modal-action flex gap-2">
+            <form method="dialog">
+              <button class="btn">Close</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
+
       <!-- Footer -->
       <footer
         class="footer footer-center p-5 bg-base-200 text-base-content w-full mt-auto"
