@@ -134,10 +134,17 @@
         <div class="flex justify-center">
           <button
             type="button"
-            class="text-white cursor-pointer bg-gradient-to-r from-pink-400 to-pink-700 hover:bg-gradient-to-l hover:scale-105 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 shadow-lg shadow-pink-500/50 transition-all duration-300 ease-in-out"
+            class="text-white cursor-pointer bg-gradient-to-r from-pink-400 to-pink-700 hover:bg-gradient-to-l hover:scale-105 font-medium rounded-lg text-sm px-5 mx-1 py-2.5 text-center me-2 shadow-lg shadow-pink-500/50 transition-all duration-300 ease-in-out"
             id="startButton"
           >
             START GAME
+          </button>
+          <button
+            type="button"
+            class="text-white cursor-pointer bg-gradient-to-r from-lime-500 to-teal-700 hover:bg-gradient-to-l hover:scale-105 font-medium rounded-lg text-sm px-5 mx-1 py-2.5 text-center me-2 shadow-lg shadow-lime-500/50 transition-all duration-300 ease-in-out"
+            id="resetButton"
+          >
+            RESET
           </button>
         </div>
       </div>
@@ -170,15 +177,23 @@
         <div class="stat">
           <div class="stat-title">Attempts</div>
           <div class="stat-value" id="attemptCount">0</div>
-          <div class="stat-desc" id="attemptDesc">Try to minimize</div>
+          <div class="stat-desc">
+            <progress
+              class="progress progress-warning w-full"
+              id="powerUpProgress"
+              value="5"
+              max="5"
+            ></progress>
+          </div>
+          <div class="stat-desc">Power Up!</div>
         </div>
       </div>
 
       <!-- Game board - adjusted width -->
       <div
         id="gameBoard"
-        class="flex-1 bg-base-100/90 backdrop-blur-sm rounded-lg mx-4 my-2 p-4 grid gap-2 w-full max-w-4xl"
-      ></div>
+        class="hidden flex-1 bg-base-100/90 backdrop-blur-sm rounded-lg mx-4 my-2 p-4 gap-2 w-full max-w-4xl"
+        ></div>
 
       <!-- Footer -->
       <footer
