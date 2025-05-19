@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PokeMatch</title>
+    <title>PokéMatch</title>
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@5"
       rel="stylesheet"
@@ -32,9 +32,8 @@
         transform: rotateY(180deg);
       }
       .card-matched {
-        opacity: 0.7;
-        box-shadow: 0 0 15px rgba(120, 255, 120, 0.7) !important;
-        border-color: #4caf50 !important;
+        background-color: rgb(56, 64, 72) !important;
+        box-shadow: 0 0 5px rgb(56, 64, 72) !important;
       }
     </style>
   </head>
@@ -76,13 +75,13 @@
 
       <!-- Game header -->
       <header class="text-center py-4">
-        <h1 class="text-base-100 text-5xl font-bold mb-1">PokeMatch</h1>
-        <p class="text-base-100 opacity-80">Match Pokemon cards to win!</p>
+        <h1 class="text-base-300 text-6xl font-bold mb-1">PokéMatch</h1>
+        <p class="text-base-100 opacity-80">Match Pokémon cards to win!</p>
       </header>
 
       <!-- Difficulty selection -->
       <div
-        class="bg-base-100/90 shadow-lg rounded-lg mx-auto max-w-fit p-4 mb-4"
+        class="bg-base-100/80 shadow-lg rounded-lg mx-auto max-w-fit p-4 mb-4"
       >
         <div class="flex flex-wrap justify-center gap-2 mb-3">
           <button
@@ -151,7 +150,7 @@
 
       <!-- Game stats -->
       <div
-        class="stats bg-base-100 shadow mx-auto mb-4 w-full max-w-md"
+        class="stats bg-base-100/80 shadow mx-auto mb-4 w-full max-w-md"
         id="gameStats"
         hidden
       >
@@ -192,14 +191,14 @@
       <!-- Game board - adjusted width -->
       <div
         id="gameBoard"
-        class="hidden flex-1 bg-base-100/90 backdrop-blur-sm rounded-lg mx-4 my-2 p-4 gap-2 w-full max-w-4xl"
+        class="hidden flex-1 bg-base-100/80 backdrop-blur-sm rounded-lg mx-4 my-2 p-4 gap-2 w-full max-w-4xl"
         ></div>
 
       <!-- Footer -->
       <footer
         class="footer footer-center p-5 bg-base-200 text-base-content w-full mt-auto"
       >
-        <p>PokeMatch © 2025 - Jimmy Cho BCIT CST 2025</p>
+        <p>PokéMatch © 2025 - Jimmy Cho BCIT CST 2025</p>
       </footer>
     </div>
   </body>

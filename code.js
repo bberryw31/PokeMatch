@@ -37,7 +37,7 @@ const fetchPokemon = (pokemonId) => {
   return axios
     .get("https://pokeapi.co/api/v2/pokemon/" + pokemonId)
     .then((response) => {
-      return response.data.sprites.other.showdown.front_default;
+      return response.data.sprites.other["official-artwork"].front_default;
     })
     .catch((error) => {
       console.error("Error fetching Pokemon:", error, pokemonId);
@@ -152,6 +152,7 @@ const startGame = () => {
   attempts = 0;
   timeLeft = 300;
   cardCount = selectedDifficulty * (selectedDifficulty - 1);
+  powerUpProgress.value = "5";
 
   if (timer) {
     clearInterval(timer);
@@ -193,7 +194,7 @@ const startGame = () => {
         <div class="card-front hidden absolute inset-0">
           <img src="${pokemonImageUrl}" alt="Pokemon ${pokemonId}" class="w-full h-full object-contain">
         </div>
-        <div class="card-back absolute inset-0">
+        <div class="card-back absolute inset-0 hover:scale-95 transition-all ease-in-out duration-50">
           <img src="./pokeball.png" alt="Pokeball" class="w-full h-full object-contain">
         </div>
       `;
@@ -203,6 +204,7 @@ const startGame = () => {
         "border",
         "border-base-content/10",
         "shadow-md",
+        "rounded-lg",
         "cursor-pointer",
         "aspect-square",
         "relative",
@@ -229,6 +231,11 @@ const startGame = () => {
       gameBoard.appendChild(card);
     });
   });
+  lockBoard = true;
+  setTimeout(() => {
+    powerUp();
+    lockBoard = false;
+  }, 500);
 }
 startButton.addEventListener("click", startGame);
 
@@ -248,8 +255,32 @@ resetButton.addEventListener("click", resetGame);
 const powerUpProgress = document.getElementById("powerUpProgress");
 const powerUp = () => {
   if (powerUpProgress.value === powerUpProgress.max) {
-    //power up!
-    powerUpProgress.value = "0"
-    return;
-  };
+    console.log("Power up activated!");
+    lockBoard = true;
+    const cards = document.querySelectorAll(".card-flip");
+    cards.forEach((card) => {
+      const frontSide = card.querySelector(".card-front");
+      const backSide = card.querySelector(".card-back");
+      card.classList.add("flipped");
+      setTimeout(() => {
+        frontSide.classList.remove("hidden");
+        backSide.classList.add("hidden");
+      }, 180);
+    });
+    setTimeout(() => {
+      cards.forEach((card) => {
+        const frontSide = card.querySelector(".card-front");
+        const backSide = card.querySelector(".card-back");
+        card.classList.remove("flipped");
+        setTimeout(() => {
+          frontSide.classList.add("hidden");
+          backSide.classList.remove("hidden");
+        }, 180);
+      });
+    }, 1000);
+    powerUpProgress.value = "0";
+  } else {
+    powerUpProgress.value = parseInt(powerUpProgress.value) + 1;
+  }
+  lockBoard = false;
 };
