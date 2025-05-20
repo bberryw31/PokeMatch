@@ -49,7 +49,7 @@ const fetchPokemon = (pokemonId) => {
 const gameTime = document.getElementById("gameTime");
 const timeProgress = document.getElementById("timeProgress");
 let timer = null;
-let timeLeft = 300;
+let timeLeft = 120;
 const updateTimer = () => {
   timeLeft--;
 
@@ -154,7 +154,7 @@ const startGame = () => {
   lockBoard = true;
   matches = 0;
   attempts = 0;
-  timeLeft = 300;
+  timeLeft = 120;
   cardCount = selectedDifficulty * (selectedDifficulty - 1);
   powerUpProgress.value = "5";
 
@@ -325,7 +325,7 @@ const gameOver = (win) => {
   const modalTime = document.getElementById("modalTime");
   const modalAttempts = document.getElementById("modalAttempts");
 
-  const timeTaken = 300 - timeLeft;
+  const timeTaken = 120 - timeLeft;
   const minutes = Math.floor(timeTaken / 60);
   const seconds = timeTaken % 60;
 
