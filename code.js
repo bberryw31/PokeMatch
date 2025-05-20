@@ -89,7 +89,7 @@ const updateStats = () => {
 
 let firstCard = null;
 let secondCard = null;
-let lockBoard = false;
+let lockBoard = true;
 const resetBoard = () => {
   firstCard = null;
   secondCard = null;
@@ -151,6 +151,7 @@ const startButton = document.getElementById("startButton");
 
 const startGame = () => {
   resetBoard();
+  lockBoard = true;
   matches = 0;
   attempts = 0;
   timeLeft = 300;
@@ -249,6 +250,13 @@ const startGame = () => {
 
       gameBoard.appendChild(card);
     });
+    setTimeout(() => {
+      gameBoard.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 300);
+
     lockBoard = true;
     setTimeout(() => {
       powerUp();
@@ -275,34 +283,42 @@ const powerUpProgress = document.getElementById("powerUpProgress");
 const powerUp = () => {
   powerUpProgress.value = parseInt(powerUpProgress.value) + 1;
   if (powerUpProgress.value >= powerUpProgress.max) {
-    console.log("Power up activated!");
-    lockBoard = true;
-    const cards = document.querySelectorAll(".card-flip");
-    cards.forEach((card) => {
-      const frontSide = card.querySelector(".card-front");
-      const backSide = card.querySelector(".card-back");
-      card.classList.add("flipped");
-      setTimeout(() => {
-        frontSide.classList.remove("hidden");
-        backSide.classList.add("hidden");
-      }, 180);
-    });
+      console.log("Power up activated!");
+      lockBoard = true;
     setTimeout(() => {
+      const cards = document.querySelectorAll(".card-flip");
       cards.forEach((card) => {
         const frontSide = card.querySelector(".card-front");
         const backSide = card.querySelector(".card-back");
-        card.classList.remove("flipped");
+        card.classList.add("flipped");
         setTimeout(() => {
-          frontSide.classList.add("hidden");
-          backSide.classList.remove("hidden");
+          frontSide.classList.remove("hidden");
+          backSide.classList.add("hidden");
         }, 180);
       });
-    }, 1000);
-    powerUpProgress.value = "0";
-    lockBoard = false;
+      setTimeout(() => {
+        cards.forEach((card) => {
+          if (card.dataset.enabled === "true") {
+            const frontSide = card.querySelector(".card-front");
+            const backSide = card.querySelector(".card-back");
+            card.classList.remove("flipped");
+            setTimeout(() => {
+              frontSide.classList.add("hidden");
+              backSide.classList.remove("hidden");
+            }, 180);
+          }
+        });
+      }, 1000);
+      setTimeout(() => {
+        resetBoard();
+        lockBoard = false;
+      }, 500);
+      powerUpProgress.value = "0";
+    }, 500);
   }
 };
 
+// game over
 const gameOver = (win) => {
   const modal = document.getElementById("gameOverModal");
   const modalResult = document.getElementById("modalResult");
@@ -313,8 +329,10 @@ const gameOver = (win) => {
   const minutes = Math.floor(timeTaken / 60);
   const seconds = timeTaken % 60;
 
-  modalResult.textContent = win ? "You Won! 🎉" : "Time's Up! 😢";
-  modalResult.className = `stat-value ${win ? "text-success" : "text-error"}`;
+  modalResult.textContent = win ? "You Win!" : "Time's Up!";
+  modalResult.className = `stat-value ${
+    win ? "text-success" : "text-error"
+  } w-full text-center mb-6`;
   modalTime.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   modalAttempts.textContent = attempts;
 

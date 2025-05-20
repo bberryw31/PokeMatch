@@ -41,7 +41,7 @@
     class="min-h-screen bg-cover bg-center transition-all duration-300"
     style="background-image: url('./bg.gif')"
   >
-    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="fixed inset-0 bg-black/50 h-full z-0"></div>
     <div class="relative z-10 min-h-screen flex flex-col items-center">
       <!-- Theme switch -->
       <div class="w-full flex justify-end p-3">
@@ -197,11 +197,8 @@
       <!-- Game over modal -->
       <dialog id="gameOverModal" class="modal modal-bottom sm:modal-middle">
         <div class="modal-box bg-base-200 text-base-content">
-          <div class="stat flex justify-center mb-4">
-            <div class="stat-value text-success" id="modalResult">You Won! 🎉</div>
-          </div>
-
-          <div class="stats shadow w-full bg-base-100">
+          <div class="w-full text-center stat-value text-success p-5" id="modalResult">You Won! 🎉</div>
+          <div class="stats shadow w-full bg-base-300">
             <div class="stat">
               <div class="stat-title">Time Taken</div>
               <div class="stat-value text-primary" id="modalTime">2:30</div>
@@ -213,7 +210,7 @@
             </div>
           </div>
 
-          <div class="modal-action flex gap-2">
+          <div class="modal-action">
             <form method="dialog">
               <button class="btn">Close</button>
             </form>
