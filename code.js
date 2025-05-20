@@ -59,7 +59,7 @@ const updateTimer = () => {
   gameTime.textContent = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
   timeProgress.value = timeLeft;
 
-  // red when under 60
+  // red when under 30
   if (timeLeft <= 30) {
     gameTime.classList.add("text-error");
     timeProgress.classList.remove("progress-primary");
